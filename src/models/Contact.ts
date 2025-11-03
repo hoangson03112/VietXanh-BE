@@ -1,4 +1,4 @@
-import mongoose, { Schema, Document } from 'mongoose';
+import mongoose, { Schema, Document } from "mongoose";
 
 export interface IContactProduct {
   productId: mongoose.Types.ObjectId;
@@ -18,7 +18,7 @@ export interface IContact extends Document {
   products?: IContactProduct[];
   totalAmount?: number;
   totalItems?: number;
-  status: 'new' | 'read' | 'replied';
+  status: "new" | "read" | "replied";
   reply?: string;
   createdAt: Date;
   updatedAt: Date;
@@ -28,7 +28,7 @@ const ContactProductSchema = new Schema<IContactProduct>(
   {
     productId: {
       type: Schema.Types.ObjectId,
-      ref: 'Product',
+      ref: "Product",
       required: true,
     },
     productName: {
@@ -99,16 +99,6 @@ const ContactSchema = new Schema<IContact>(
       type: Number,
       min: 0,
     },
-    status: {
-      type: String,
-      enum: ['new', 'read', 'replied'],
-      default: 'new',
-      index: true,
-    },
-    reply: {
-      type: String,
-      maxlength: 2000,
-    },
   },
   {
     timestamps: true,
@@ -117,4 +107,5 @@ const ContactSchema = new Schema<IContact>(
 
 ContactSchema.index({ createdAt: -1 });
 
-export default mongoose.models.Contact || mongoose.model<IContact>('Contact', ContactSchema,'contact');
+export default mongoose.models.Contact ||
+  mongoose.model<IContact>("Contact", ContactSchema, "contact");

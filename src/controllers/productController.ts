@@ -200,8 +200,15 @@ export const toggleProductStatus = async (req: Request, res: Response) => {
         .json({ success: false, message: "Product not found" });
     }
 
-    // Đảo trạng thái
     product.isActive = !product.isActive;
+
+    if (!product.isActive && product.isFeatured) {
+      product.isFeatured = false;
+      console.log(
+        `⚠️ Product ${product._id} auto-removed from featured (product is now inactive)`
+      );
+    }
+
     await product.save();
 
     console.log(`✅ Product ${product._id} isActive: ${product.isActive}`);
@@ -241,12 +248,11 @@ export const searchProducts = async (req: Request, res: Response) => {
   }
 };
 
-// Lấy sản phẩm nổi bật (featured) cho homepage (tối đa 4)
 export const getFeaturedProducts = async (req: Request, res: Response) => {
   try {
-    const products = await Product.find({ 
-      isActive: true, 
-      isFeatured: true 
+    const products = await Product.find({
+      isActive: true,
+      isFeatured: true,
     })
       .sort({ createdAt: -1 })
       .limit(4);
@@ -272,17 +278,27 @@ export const toggleFeaturedStatus = async (req: Request, res: Response) => {
         .json({ success: false, message: "Product not found" });
     }
 
+    // QUAN TRỌNG: Chỉ cho phép featured sản phẩm đang ACTIVE
+    if (!product.isFeatured && !product.isActive) {
+      return res.status(400).json({
+        success: false,
+        message:
+          "Cannot feature an inactive product. Please activate the product first.",
+      });
+    }
+
     // Nếu đang bật featured, kiểm tra số lượng featured products
     if (!product.isFeatured) {
-      const featuredCount = await Product.countDocuments({ 
+      const featuredCount = await Product.countDocuments({
         isFeatured: true,
-        isActive: true 
+        isActive: true,
       });
 
       if (featuredCount >= 4) {
         return res.status(400).json({
           success: false,
-          message: "Maximum 4 featured products allowed. Please remove another featured product first.",
+          message:
+            "Maximum 4 featured products allowed. Please remove another featured product first.",
         });
       }
     }

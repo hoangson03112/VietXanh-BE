@@ -1,10 +1,10 @@
-import mongoose, { Schema, Document } from 'mongoose';
+import mongoose, { Schema, Document } from "mongoose";
 
 export interface IUser extends Document {
   userName: string;
   email: string;
   passwordHash: string;
-  role: 'user' | 'admin';
+  role: "user" | "admin";
   isActive: boolean;
   createdAt: Date;
   updatedAt: Date;
@@ -31,8 +31,8 @@ const UserSchema = new Schema<IUser>(
     },
     role: {
       type: String,
-      enum: ['user', 'admin'],
-      default: 'user',
+      enum: ["user", "admin"],
+      default: "user",
       index: true,
     },
     isActive: {
@@ -49,4 +49,5 @@ const UserSchema = new Schema<IUser>(
 UserSchema.index({ email: 1 }, { unique: true });
 UserSchema.index({ createdAt: -1 });
 
-export default mongoose.models.User || mongoose.model<IUser>('User', UserSchema,'user');
+export default mongoose.models.User ||
+  mongoose.model<IUser>("User", UserSchema, "user");

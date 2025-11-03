@@ -4,8 +4,6 @@ export interface IProduct extends Document {
   name: string;
   description: string;
   price: number;
-  stock: number;
-  category: string;
   images: string[];
   isActive: boolean;
   isFeatured: boolean;
@@ -32,16 +30,7 @@ const ProductSchema = new Schema<IProduct>(
       required: true,
       min: 0,
     },
-    stock: {
-      type: Number,
-      default: 0,
-      min: 0,
-    },
-    category: {
-      type: String,
-      default: 'Khác',
-      trim: true,
-    },
+
     images: [
       {
         type: String,
