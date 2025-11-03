@@ -2,8 +2,10 @@ services:
   - type: web
     name: vietxanh-be
     env: node
-    buildCommand: npm install && npm run build
-    startCommand: npm start
+    region: singapore
+    plan: free
+    buildCommand: npm ci && npm run build && chmod +x start.sh
+    startCommand: bash start.sh
     envVars:
       - key: NODE_ENV
         value: production
